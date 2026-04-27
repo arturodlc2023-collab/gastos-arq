@@ -254,9 +254,7 @@
     setTimeout(function() { t.style.display = 'none'; }, 6000);
   }
 
-  function val(id) {
-    return document.getElementById(id).value.trim();
-  }
+  function val(id) { return document.getElementById(id).value.trim(); }
 
   function radioVal(name) {
     var el = document.querySelector('input[name="' + name + '"]:checked');
@@ -285,6 +283,9 @@
     document.getElementById('comprobante').value = '';
   }
 
+  // Contador global para callbacks únicos
+  var cbCounter = 0;
+
   function submitForm() {
     var error = validateForm();
     if (error) { showToast('⚠ ' + error, true); return; }
@@ -311,40 +312,48 @@
       notas:            val('notas')
     };
 
+    // Nombre único para el callback de esta petición
+    var cbName = 'gsCallback_' + (++cbCounter);
+    fields.callback = cbName;
+
     var url = APPS_SCRIPT_URL + '?' + new URLSearchParams(fields).toString();
 
-    // Usamos script tag (JSONP) — el único método que funciona
-    // desde cualquier dispositivo sin problemas de CORS ni redirects
-    var script = document.createElement('script');
-    script.src = url + '&callback=onScriptResponse';
-    script.onerror = function() {
-      // onerror también significa que llegó (Google bloquea la respuesta pero ejecutó el script)
+    // Definimos el callback globalmente para que el script lo encuentre
+    window[cbName] = function(data) {
+      clearTimeout(timer);
+      cleanup();
       showToast('✓ Gasto registrado correctamente en Google Sheets.', false);
       resetForm();
       btn.disabled = false;
       btn.textContent = 'Registrar gasto →';
-      document.body.removeChild(script);
     };
+
+    var script = document.createElement('script');
+    script.src = url;
+
+    function cleanup() {
+      if (script.parentNode) document.body.removeChild(script);
+      delete window[cbName];
+    }
+
+    script.onerror = function() {
+      clearTimeout(timer);
+      cleanup();
+      showToast('Error de conexión. Verifica tu internet.', true);
+      btn.disabled = false;
+      btn.textContent = 'Registrar gasto →';
+    };
+
+    // Timeout de 10 segundos por si no hay respuesta
+    var timer = setTimeout(function() {
+      cleanup();
+      showToast('✓ Gasto enviado a Google Sheets.', false);
+      resetForm();
+      btn.disabled = false;
+      btn.textContent = 'Registrar gasto →';
+    }, 10000);
+
     document.body.appendChild(script);
-
-    // Timeout de seguridad: si en 4 segundos no hubo error ni respuesta, asumimos éxito
-    setTimeout(function() {
-      if (btn.disabled) {
-        showToast('✓ Gasto registrado correctamente en Google Sheets.', false);
-        resetForm();
-        btn.disabled = false;
-        btn.textContent = 'Registrar gasto →';
-      }
-    }, 4000);
-  }
-
-  // Callback por si Apps Script responde con JSONP
-  function onScriptResponse(data) {
-    var btn = document.getElementById('btn-submit');
-    showToast('✓ Gasto registrado correctamente en Google Sheets.', false);
-    resetForm();
-    btn.disabled = false;
-    btn.textContent = 'Registrar gasto →';
   }
 </script>
 </body>
