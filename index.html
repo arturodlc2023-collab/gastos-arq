@@ -260,19 +260,11 @@
 
     // fetch CORS real — Apps Script devuelve Access-Control-Allow-Origin: *
     // cuando está deployado como "Anyone". Podemos leer la respuesta y confirmar.
-    fetch(url, { method: 'GET', credentials: 'omit' })
-      .then(function(res) { return res.text(); })
+    // no-cors: el dato llega al servidor sin importar CORS ni redirects
+    // Una sola peticion, sin fallback que duplique el envio
+    fetch(url, { method: 'GET', mode: 'no-cors' })
       .then(function() { finalizarEnvio(btn); })
-      .catch(function() {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState !== 4) return;
-          finalizarEnvio(btn);
-        };
-        xhr.onerror = function() { finalizarEnvio(btn); };
-        xhr.send();
-      });
+      .catch(function() { finalizarEnvio(btn); });
   }
 </script>
 </body>
