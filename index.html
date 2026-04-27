@@ -283,18 +283,12 @@
     document.getElementById('comprobante').value = '';
   }
 
-  // Contador global para callbacks únicos
-  var cbCounter = 0;
+  function buildUrl(fields) {
+    return APPS_SCRIPT_URL + '?' + new URLSearchParams(fields).toString();
+  }
 
-  function submitForm() {
-    var error = validateForm();
-    if (error) { showToast('⚠ ' + error, true); return; }
-
-    var btn = document.getElementById('btn-submit');
-    btn.disabled = true;
-    btn.textContent = 'Enviando...';
-
-    var fields = {
+  function getFields() {
+    return {
       timestamp:        new Date().toISOString(),
       fecha:            val('fecha'),
       proyecto:         val('proyecto'),
@@ -311,46 +305,40 @@
       tipo_comprobante: val('tipo_comprobante'),
       notas:            val('notas')
     };
+  }
 
-    // Nombre único para el callback de esta petición
-    var cbName = 'gsCallback_' + (++cbCounter);
-    fields.callback = cbName;
+  function submitForm() {
+    var error = validateForm();
+    if (error) { showToast('⚠ ' + error, true); return; }
 
-    var url = APPS_SCRIPT_URL + '?' + new URLSearchParams(fields).toString();
+    var btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
 
-    // Definimos el callback globalmente para que el script lo encuentre
-    window[cbName] = function(data) {
-      clearTimeout(timer);
-      cleanup();
-      showToast('✓ Gasto registrado correctamente en Google Sheets.', false);
-      resetForm();
-      btn.disabled = false;
-      btn.textContent = 'Registrar gasto →';
-    };
+    var fields = getFields();
+    var url = buildUrl(fields);
 
-    var script = document.createElement('script');
-    script.src = url;
+    // Método 1: fetch no-cors — funciona desde HTTPS en todos los dispositivos
+    // No podemos leer la respuesta pero el dato sí llega al servidor
+    fetch(url, { method: 'GET', mode: 'no-cors' })
+      .then(function() {
+        onSuccess(btn);
+      })
+      .catch(function() {
+        // Método 2: Image() como respaldo — no tiene restricciones de CORS
+        var img = new Image();
+        img.onload = img.onerror = function() {
+          onSuccess(btn);
+        };
+        img.src = url;
+      });
+  }
 
-    function cleanup() {
-      if (script.parentNode) document.body.removeChild(script);
-      delete window[cbName];
-    }
-
-   script.onerror = function() {
-  // En móvil onerror puede dispararse aunque el dato llegó
-  // dejamos que el timeout confirme el éxito
-};
-
-    // Timeout de 10 segundos por si no hay respuesta
-    var timer = setTimeout(function() {
-      cleanup();
-      showToast('✓ Gasto enviado a Google Sheets.', false);
-      resetForm();
-      btn.disabled = false;
-      btn.textContent = 'Registrar gasto →';
-    }, 10000);
-
-    document.body.appendChild(script);
+  function onSuccess(btn) {
+    showToast('✓ Gasto registrado correctamente en Google Sheets.', false);
+    resetForm();
+    btn.disabled = false;
+    btn.textContent = 'Registrar gasto →';
   }
 </script>
 </body>
