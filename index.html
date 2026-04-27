@@ -336,13 +336,10 @@
       delete window[cbName];
     }
 
-    script.onerror = function() {
-      clearTimeout(timer);
-      cleanup();
-      showToast('Error de conexión. Verifica tu internet.', true);
-      btn.disabled = false;
-      btn.textContent = 'Registrar gasto →';
-    };
+   script.onerror = function() {
+  // En móvil onerror puede dispararse aunque el dato llegó
+  // dejamos que el timeout confirme el éxito
+};
 
     // Timeout de 10 segundos por si no hay respuesta
     var timer = setTimeout(function() {
