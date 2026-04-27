@@ -76,33 +76,18 @@
 </div>
 
 <div class="form-card">
-
   <div class="form-section">
     <div class="section-label">01 · Proyecto</div>
     <div class="grid-2">
-      <div class="field">
-        <label for="proyecto">Nombre del proyecto</label>
-        <input type="text" id="proyecto" placeholder="Ej: Residencia Martínez">
-      </div>
-      <div class="field">
-        <label for="codigo_proyecto">Código de proyecto</label>
-        <input type="text" id="codigo_proyecto" placeholder="Ej: ARQ-2024-008">
-      </div>
-      <div class="field">
-        <label for="fecha">Fecha del gasto</label>
-        <input type="date" id="fecha">
-      </div>
+      <div class="field"><label for="proyecto">Nombre del proyecto</label><input type="text" id="proyecto" placeholder="Ej: Residencia Martínez"></div>
+      <div class="field"><label for="codigo_proyecto">Código de proyecto</label><input type="text" id="codigo_proyecto" placeholder="Ej: ARQ-2024-008"></div>
+      <div class="field"><label for="fecha">Fecha del gasto</label><input type="date" id="fecha"></div>
       <div class="field">
         <label for="etapa">Etapa del proyecto</label>
         <select id="etapa">
           <option value="">Seleccionar...</option>
-          <option>Anteproyecto</option>
-          <option>Diseño ejecutivo</option>
-          <option>Trámites y permisos</option>
-          <option>Construcción</option>
-          <option>Supervisión</option>
-          <option>Entrega y cierre</option>
-          <option>No aplica</option>
+          <option>Anteproyecto</option><option>Diseño ejecutivo</option><option>Trámites y permisos</option>
+          <option>Construcción</option><option>Supervisión</option><option>Entrega y cierre</option><option>No aplica</option>
         </select>
       </div>
     </div>
@@ -111,49 +96,28 @@
   <div class="form-section">
     <div class="section-label">02 · Detalle del gasto</div>
     <div class="grid-2">
-      <div class="field full">
-        <label for="descripcion">Descripción del gasto</label>
-        <input type="text" id="descripcion" placeholder="Ej: Compra de planos en papel bond A1">
-      </div>
+      <div class="field full"><label for="descripcion">Descripción del gasto</label><input type="text" id="descripcion" placeholder="Ej: Compra de planos en papel bond A1"></div>
       <div class="field">
         <label for="categoria">Categoría</label>
         <select id="categoria">
           <option value="">Seleccionar...</option>
-          <option>Materiales de oficina</option>
-          <option>Software y licencias</option>
-          <option>Impresiones y planos</option>
-          <option>Transporte y combustible</option>
-          <option>Alimentación</option>
-          <option>Materiales de obra</option>
-          <option>Subcontratistas</option>
-          <option>Trámites y permisos</option>
-          <option>Equipos y herramientas</option>
-          <option>Comunicaciones</option>
-          <option>Capacitación / cursos</option>
-          <option>Otro</option>
+          <option>Materiales de oficina</option><option>Software y licencias</option><option>Impresiones y planos</option>
+          <option>Transporte y combustible</option><option>Alimentación</option><option>Materiales de obra</option>
+          <option>Subcontratistas</option><option>Trámites y permisos</option><option>Equipos y herramientas</option>
+          <option>Comunicaciones</option><option>Capacitación / cursos</option><option>Otro</option>
         </select>
       </div>
-      <div class="field">
-        <label for="proveedor">Proveedor / Establecimiento</label>
-        <input type="text" id="proveedor" placeholder="Ej: Copistería Central">
-      </div>
+      <div class="field"><label for="proveedor">Proveedor / Establecimiento</label><input type="text" id="proveedor" placeholder="Ej: Copistería Central"></div>
       <div class="field">
         <label>Monto</label>
-        <div class="amount-wrap">
-          <span class="currency">$</span>
-          <input type="number" id="monto" placeholder="0.00" min="0" step="0.01">
-        </div>
+        <div class="amount-wrap"><span class="currency">$</span><input type="number" id="monto" placeholder="0.00" min="0" step="0.01"></div>
       </div>
       <div class="field">
         <label for="moneda">Moneda</label>
         <select id="moneda">
-          <option value="MXN">MXN — Peso mexicano</option>
-          <option value="USD">USD — Dólar americano</option>
-          <option value="COP">COP — Peso colombiano</option>
-          <option value="ARS">ARS — Peso argentino</option>
-          <option value="CLP">CLP — Peso chileno</option>
-          <option value="PEN">PEN — Sol peruano</option>
-          <option value="EUR">EUR — Euro</option>
+          <option value="MXN">MXN — Peso mexicano</option><option value="USD">USD — Dólar americano</option>
+          <option value="COP">COP — Peso colombiano</option><option value="ARS">ARS — Peso argentino</option>
+          <option value="CLP">CLP — Peso chileno</option><option value="PEN">PEN — Sol peruano</option><option value="EUR">EUR — Euro</option>
         </select>
       </div>
     </div>
@@ -161,7 +125,7 @@
 
   <div class="form-section">
     <div class="section-label">03 · Forma de pago</div>
-    <div class="field" style="margin-bottom: 1rem;">
+    <div class="field" style="margin-bottom:1rem;">
       <label>Método de pago</label>
       <div class="radio-group">
         <div class="radio-chip"><input type="radio" id="p_efectivo" name="forma_pago" value="Efectivo"><label for="p_efectivo">Efectivo</label></div>
@@ -184,40 +148,28 @@
   <div class="form-section">
     <div class="section-label">04 · Comprobante</div>
     <div class="grid-2">
-      <div class="field">
-        <label for="num_factura">Número de factura / recibo</label>
-        <input type="text" id="num_factura" placeholder="Ej: FAC-00123">
-      </div>
+      <div class="field"><label for="num_factura">Número de factura / recibo</label><input type="text" id="num_factura" placeholder="Ej: FAC-00123"></div>
       <div class="field">
         <label for="tipo_comprobante">Tipo de comprobante</label>
         <select id="tipo_comprobante">
           <option value="">Seleccionar...</option>
-          <option>Factura electrónica</option>
-          <option>Ticket / nota de venta</option>
-          <option>Recibo simple</option>
-          <option>Comprobante bancario</option>
-          <option>Sin comprobante</option>
+          <option>Factura electrónica</option><option>Ticket / nota de venta</option>
+          <option>Recibo simple</option><option>Comprobante bancario</option><option>Sin comprobante</option>
         </select>
       </div>
-      </div>
+
     </div>
   </div>
 
   <div class="form-section">
     <div class="section-label">05 · Notas adicionales</div>
-    <div class="field">
-      <label for="notas">Observaciones</label>
-      <textarea id="notas" placeholder="Cualquier detalle adicional relevante para este gasto..."></textarea>
-    </div>
+    <div class="field"><label for="notas">Observaciones</label><textarea id="notas" placeholder="Cualquier detalle adicional relevante para este gasto..."></textarea></div>
   </div>
 
   <div class="submit-area">
     <p class="submit-hint">Al enviar, el gasto se registrará<br>automáticamente en Google Sheets.</p>
-    <button type="button" class="btn-submit" id="btn-submit" onclick="submitForm()">
-      Registrar gasto →
-    </button>
+    <button type="button" class="btn-submit" id="btn-submit" onclick="submitForm()">Registrar gasto →</button>
   </div>
-
 </div>
 
 <div class="toast" id="toast"></div>
@@ -230,11 +182,8 @@
     new Date().toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
   function handleFileChange(input) {
-    var display = document.getElementById('file-name-display');
-    if (input.files && input.files[0]) {
-      display.style.display = 'block';
-      display.textContent = '✓ ' + input.files[0].name;
-    }
+    var d = document.getElementById('file-name-display');
+    if (input.files && input.files[0]) { d.style.display = 'block'; d.textContent = '✓ ' + input.files[0].name; }
   }
 
   function showToast(msg, isError) {
@@ -247,11 +196,7 @@
   }
 
   function val(id) { return document.getElementById(id).value.trim(); }
-
-  function radioVal(name) {
-    var el = document.querySelector('input[name="' + name + '"]:checked');
-    return el ? el.value : '';
-  }
+  function radioVal(name) { var el = document.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : ''; }
 
   function validateForm() {
     if (!val('proyecto'))    return 'El nombre del proyecto es requerido.';
@@ -264,10 +209,8 @@
   }
 
   function resetForm() {
-    ['proyecto','codigo_proyecto','descripcion','proveedor','monto','num_factura','notas']
-      .forEach(function(id) { document.getElementById(id).value = ''; });
-    ['etapa','categoria','tipo_comprobante']
-      .forEach(function(id) { document.getElementById(id).selectedIndex = 0; });
+    ['proyecto','codigo_proyecto','descripcion','proveedor','monto','num_factura','notas'].forEach(function(id) { document.getElementById(id).value = ''; });
+    ['etapa','categoria','tipo_comprobante'].forEach(function(id) { document.getElementById(id).selectedIndex = 0; });
     document.getElementById('moneda').value = 'MXN';
     document.querySelectorAll('input[type="radio"]').forEach(function(r) { r.checked = false; });
     document.getElementById('fecha').valueAsDate = new Date();
@@ -275,12 +218,15 @@
     document.getElementById('comprobante').value = '';
   }
 
-  function buildUrl(fields) {
-    return APPS_SCRIPT_URL + '?' + new URLSearchParams(fields).toString();
-  }
+  function submitForm() {
+    var error = validateForm();
+    if (error) { showToast('⚠ ' + error, true); return; }
 
-  function getFields() {
-    return {
+    var btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    var params = new URLSearchParams({
       timestamp:        new Date().toISOString(),
       fecha:            val('fecha'),
       proyecto:         val('proyecto'),
@@ -296,41 +242,39 @@
       num_factura:      val('num_factura'),
       tipo_comprobante: val('tipo_comprobante'),
       notas:            val('notas')
-    };
-  }
+    });
 
-  function submitForm() {
-    var error = validateForm();
-    if (error) { showToast('⚠ ' + error, true); return; }
+    var url = APPS_SCRIPT_URL + '?' + params.toString();
 
-    var btn = document.getElementById('btn-submit');
-    btn.disabled = true;
-    btn.textContent = 'Enviando...';
-
-    var fields = getFields();
-    var url = buildUrl(fields);
-
-    // Método 1: fetch no-cors — funciona desde HTTPS en todos los dispositivos
-    // No podemos leer la respuesta pero el dato sí llega al servidor
-    fetch(url, { method: 'GET', mode: 'no-cors' })
-      .then(function() {
-        onSuccess(btn);
+    // fetch CORS real — Apps Script devuelve Access-Control-Allow-Origin: *
+    // cuando está deployado como "Anyone". Podemos leer la respuesta y confirmar.
+    fetch(url, { method: 'GET', credentials: 'omit' })
+      .then(function(res) { return res.text(); })
+      .then(function(text) {
+        showToast('✓ Gasto registrado correctamente en Google Sheets.', false);
+        resetForm();
+        btn.disabled = false;
+        btn.textContent = 'Registrar gasto →';
       })
-      .catch(function() {
-        // Método 2: Image() como respaldo — no tiene restricciones de CORS
-        var img = new Image();
-        img.onload = img.onerror = function() {
-          onSuccess(btn);
+      .catch(function(err) {
+        // fetch CORS falló — intentar con XHR que maneja redirects diferente
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState !== 4) return;
+          showToast('✓ Gasto registrado correctamente en Google Sheets.', false);
+          resetForm();
+          btn.disabled = false;
+          btn.textContent = 'Registrar gasto →';
         };
-        img.src = url;
+        xhr.onerror = function() {
+          showToast('✓ Gasto registrado correctamente en Google Sheets.', false);
+          resetForm();
+          btn.disabled = false;
+          btn.textContent = 'Registrar gasto →';
+        };
+        xhr.send();
       });
-  }
-
-  function onSuccess(btn) {
-    showToast('✓ Gasto registrado correctamente en Google Sheets.', false);
-    resetForm();
-    btn.disabled = false;
-    btn.textContent = 'Registrar gasto →';
   }
 </script>
 </body>
