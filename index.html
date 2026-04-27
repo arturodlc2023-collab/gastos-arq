@@ -229,12 +229,9 @@
 </div>
 
 <div class="toast" id="toast"></div>
-<iframe name="hidden_iframe" style="display:none;"></iframe>
 
 <script>
-  // ─── TU URL DE APPS SCRIPT ──────────────────────────────────────────────────
   var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzStqMqcrYrQoRaPEkwpBaX-VLUOyp1jjl2MayIX8VjYAc0D6gVXVydREr9662VxZL9/exec';
-  // ────────────────────────────────────────────────────────────────────────────
 
   document.getElementById('fecha').valueAsDate = new Date();
   document.getElementById('current-date').textContent =
@@ -314,29 +311,20 @@
       notas:            val('notas')
     };
 
-    var form = document.createElement('form');
-    form.method = 'GET';
-    form.action = APPS_SCRIPT_URL;
-    form.target = 'hidden_iframe';
+    var url = APPS_SCRIPT_URL + '?' + new URLSearchParams(fields).toString();
 
-    Object.keys(fields).forEach(function(key) {
-      var input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = fields[key];
-      form.appendChild(input);
-    });
-
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
-
-    setTimeout(function() {
-      showToast('✓ Gasto registrado correctamente en Google Sheets.', false);
-      resetForm();
-      btn.disabled = false;
-      btn.textContent = 'Registrar gasto →';
-    }, 2000);
+    fetch(url, { method: 'GET', mode: 'no-cors' })
+      .then(function() {
+        showToast('✓ Gasto registrado correctamente en Google Sheets.', false);
+        resetForm();
+      })
+      .catch(function() {
+        showToast('Error de conexión. Verifica tu internet e intenta de nuevo.', true);
+      })
+      .finally(function() {
+        btn.disabled = false;
+        btn.textContent = 'Registrar gasto →';
+      });
   }
 </script>
 </body>
