@@ -209,20 +209,32 @@
   }
 
   function resetForm() {
-    ['proyecto','codigo_proyecto','descripcion','proveedor','monto','num_factura','notas'].forEach(function(id) { document.getElementById(id).value = ''; });
-    ['etapa','categoria','tipo_comprobante'].forEach(function(id) { document.getElementById(id).selectedIndex = 0; });
+    ['proyecto','codigo_proyecto','descripcion','proveedor','monto','num_factura','notas']
+      .forEach(function(id) { document.getElementById(id).value = ''; });
+    ['etapa','categoria','tipo_comprobante']
+      .forEach(function(id) { document.getElementById(id).selectedIndex = 0; });
     document.getElementById('moneda').value = 'MXN';
     document.querySelectorAll('input[type="radio"]').forEach(function(r) { r.checked = false; });
     document.getElementById('fecha').valueAsDate = new Date();
-    document.getElementById('file-name-display').style.display = 'none';
-    document.getElementById('comprobante').value = '';
   }
 
+  function finalizarEnvio(btn) {
+    enviando = false;
+    btn.disabled = false;
+    btn.textContent = 'Registrar gasto →';
+    showToast('✓ Gasto registrado correctamente en Google Sheets.', false);
+    resetForm();
+  }
+
+  var enviando = false;
+
   function submitForm() {
+    if (enviando) return;
     var error = validateForm();
     if (error) { showToast('⚠ ' + error, true); return; }
 
     var btn = document.getElementById('btn-submit');
+    enviando = true;
     btn.disabled = true;
     btn.textContent = 'Enviando...';
 
@@ -250,29 +262,15 @@
     // cuando está deployado como "Anyone". Podemos leer la respuesta y confirmar.
     fetch(url, { method: 'GET', credentials: 'omit' })
       .then(function(res) { return res.text(); })
-      .then(function(text) {
-        showToast('✓ Gasto registrado correctamente en Google Sheets.', false);
-        resetForm();
-        btn.disabled = false;
-        btn.textContent = 'Registrar gasto →';
-      })
-      .catch(function(err) {
-        // fetch CORS falló — intentar con XHR que maneja redirects diferente
+      .then(function() { finalizarEnvio(btn); })
+      .catch(function() {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
         xhr.onreadystatechange = function() {
           if (xhr.readyState !== 4) return;
-          showToast('✓ Gasto registrado correctamente en Google Sheets.', false);
-          resetForm();
-          btn.disabled = false;
-          btn.textContent = 'Registrar gasto →';
+          finalizarEnvio(btn);
         };
-        xhr.onerror = function() {
-          showToast('✓ Gasto registrado correctamente en Google Sheets.', false);
-          resetForm();
-          btn.disabled = false;
-          btn.textContent = 'Registrar gasto →';
-        };
+        xhr.onerror = function() { finalizarEnvio(btn); };
         xhr.send();
       });
   }
