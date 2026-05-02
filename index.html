@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Registro de Gastos · Arquitecto</title>
+<title>Registro de Movimientos · MODULOR</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -26,6 +26,7 @@
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .field { display: flex; flex-direction: column; gap: 6px; }
   .field.full { grid-column: 1 / -1; }
+  .field.hidden { display: none; }
   label { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
   input, select, textarea { font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); background: var(--paper); border: 1px solid var(--line); padding: 10px 12px; outline: none; transition: border-color 0.15s, background 0.15s; width: 100%; border-radius: 0; -webkit-appearance: none; appearance: none; }
   select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a5a54' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer; }
@@ -41,12 +42,6 @@
   .radio-chip label { display: block; padding: 8px 14px; background: var(--paper); border: 1px solid var(--line); font-size: 12px; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--ink-soft); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
   .radio-chip input[type="radio"]:checked + label { background: var(--ink); border-color: var(--ink); color: var(--paper); }
   .radio-chip label:hover { border-color: var(--ink-soft); color: var(--ink); }
-  .file-zone { border: 1px dashed var(--line); padding: 1.25rem; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; background: var(--paper); position: relative; }
-  .file-zone:hover { border-color: var(--accent); background: var(--accent-light); }
-  .file-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; padding: 0; border: none; background: none; }
-  .file-zone .file-icon { font-size: 20px; margin-bottom: 6px; display: block; }
-  .file-zone p { font-size: 12px; color: var(--ink-muted); line-height: 1.5; }
-  .file-zone .file-name { font-size: 12px; color: var(--accent); font-weight: 500; margin-top: 4px; display: none; }
   .submit-area { padding: 1.75rem 2rem; background: var(--paper-dark); display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
   .submit-hint { font-size: 12px; color: var(--ink-muted); line-height: 1.4; }
   .btn-submit { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; background: var(--ink); border: none; padding: 13px 28px; cursor: pointer; transition: background 0.15s, transform 0.1s; white-space: nowrap; flex-shrink: 0; }
@@ -66,58 +61,121 @@
 
 <div class="header">
   <div class="header-left">
-    <p class="eyebrow">Gestión de proyectos</p>
-    <h1>Registro de <span>Gastos</span></h1>
+    <p class="eyebrow">MODULOR · Gestión</p>
+    <h1>Registro de <span>Movimientos</span></h1>
   </div>
   <div class="header-right">
     <div id="current-date"></div>
-    <div>Formulario · v1.0</div>
+    <div>Formulario · v2.0</div>
   </div>
 </div>
 
 <div class="form-card">
+
   <div class="form-section">
-    <div class="section-label">01 · Proyecto</div>
+    <div class="section-label">01 · Movimiento</div>
     <div class="grid-2">
-      <div class="field"><label for="proyecto">Nombre del proyecto</label><input type="text" id="proyecto" placeholder="Ej: Residencia Martínez"></div>
-      <div class="field"><label for="codigo_proyecto">Código de proyecto</label><input type="text" id="codigo_proyecto" placeholder="Ej: ARQ-2024-008"></div>
-      <div class="field"><label for="fecha">Fecha del gasto</label><input type="date" id="fecha"></div>
       <div class="field">
-        <label for="etapa">Etapa del proyecto</label>
-        <select id="etapa">
+        <label for="tipo_movimiento">Tipo de movimiento</label>
+        <select id="tipo_movimiento">
           <option value="">Seleccionar...</option>
-          <option>Anteproyecto</option><option>Diseño ejecutivo</option><option>Trámites y permisos</option>
-          <option>Construcción</option><option>Supervisión</option><option>Entrega y cierre</option><option>No aplica</option>
+          <option>Ingreso</option>
+          <option>Gasto</option>
         </select>
+      </div>
+      <div class="field">
+        <label for="etapa">Etapa</label>
+        <select id="etapa" onchange="onEtapaChange()">
+          <option value="">Seleccionar...</option>
+          <option>Obra</option>
+          <option>Proyecto</option>
+        </select>
+      </div>
+      <div class="field" id="proyecto-select-wrap">
+        <label for="proyecto_select">Nombre del proyecto</label>
+        <select id="proyecto_select" onchange="onProyectoSelectChange()">
+          <option value="">Primero selecciona la etapa...</option>
+        </select>
+      </div>
+      <div class="field hidden" id="proyecto-libre-wrap">
+        <label for="proyecto_libre">Especificar proyecto</label>
+        <input type="text" id="proyecto_libre" placeholder="Escribe el nombre del proyecto">
+      </div>
+      <div class="field">
+        <label for="fecha">Fecha</label>
+        <input type="date" id="fecha">
       </div>
     </div>
   </div>
 
   <div class="form-section">
-    <div class="section-label">02 · Detalle del gasto</div>
+    <div class="section-label">02 · Detalle</div>
     <div class="grid-2">
-      <div class="field full"><label for="descripcion">Descripción del gasto</label><input type="text" id="descripcion" placeholder="Ej: Compra de planos en papel bond A1"></div>
-      <div class="field">
-        <label for="categoria">Categoría</label>
-        <select id="categoria">
+      <div class="field full">
+        <label for="descripcion_select">Descripción</label>
+        <select id="descripcion_select" onchange="onDescripcionChange()">
           <option value="">Seleccionar...</option>
-          <option>Materiales de oficina</option><option>Software y licencias</option><option>Impresiones y planos</option>
-          <option>Transporte y combustible</option><option>Alimentación</option><option>Materiales de obra</option>
-          <option>Subcontratistas</option><option>Trámites y permisos</option><option>Equipos y herramientas</option>
-          <option>Comunicaciones</option><option>Capacitación / cursos</option><option>Otro</option>
+          <option>Demoliciones y albañilería</option>
+          <option>Tablaroca</option>
+          <option>Acabados</option>
+          <option>Carpintería y cancelería</option>
+          <option>Instalación eléctrica</option>
+          <option>Instalación hidrosanitaria</option>
+          <option>Oxígeno y aire comprimido</option>
+          <option>Permisos y trámites</option>
+          <option value="__OTRO__">Otro (especificar)</option>
         </select>
       </div>
-      <div class="field"><label for="proveedor">Proveedor / Establecimiento</label><input type="text" id="proveedor" placeholder="Ej: Copistería Central"></div>
+      <div class="field full hidden" id="descripcion-libre-wrap">
+        <label for="descripcion_libre">Especificar descripción</label>
+        <input type="text" id="descripcion_libre" placeholder="Escribe la descripción">
+      </div>
+      <div class="field">
+        <label for="categoria_select">Categoría</label>
+        <select id="categoria_select" onchange="onCategoriaChange()">
+          <option value="">Seleccionar...</option>
+          <option>Mano de obra</option>
+          <option>Material</option>
+          <option value="__OTRO__">Otro (especificar)</option>
+        </select>
+      </div>
+      <div class="field hidden" id="categoria-libre-wrap">
+        <label for="categoria_libre">Especificar categoría</label>
+        <input type="text" id="categoria_libre" placeholder="Escribe la categoría">
+      </div>
+      <div class="field">
+        <label for="proveedor_select">Proveedor</label>
+        <select id="proveedor_select" onchange="onProveedorChange()">
+          <option value="">Seleccionar...</option>
+          <option>Gases Medicinales</option>
+          <option>Carpintería</option>
+          <option>Piso PVC</option>
+          <option>Aluminio</option>
+          <option>Herrero</option>
+          <option value="__OTRO__">Otro (especificar)</option>
+        </select>
+      </div>
+      <div class="field hidden" id="proveedor-libre-wrap">
+        <label for="proveedor_libre">Especificar proveedor</label>
+        <input type="text" id="proveedor_libre" placeholder="Escribe el proveedor">
+      </div>
       <div class="field">
         <label>Monto</label>
-        <div class="amount-wrap"><span class="currency">$</span><input type="number" id="monto" placeholder="0.00" min="0" step="0.01"></div>
+        <div class="amount-wrap">
+          <span class="currency">$</span>
+          <input type="number" id="monto" placeholder="0.00" min="0" step="0.01">
+        </div>
       </div>
       <div class="field">
         <label for="moneda">Moneda</label>
         <select id="moneda">
-          <option value="MXN">MXN — Peso mexicano</option><option value="USD">USD — Dólar americano</option>
-          <option value="COP">COP — Peso colombiano</option><option value="ARS">ARS — Peso argentino</option>
-          <option value="CLP">CLP — Peso chileno</option><option value="PEN">PEN — Sol peruano</option><option value="EUR">EUR — Euro</option>
+          <option value="MXN">MXN — Peso mexicano</option>
+          <option value="USD">USD — Dólar americano</option>
+          <option value="COP">COP — Peso colombiano</option>
+          <option value="ARS">ARS — Peso argentino</option>
+          <option value="CLP">CLP — Peso chileno</option>
+          <option value="PEN">PEN — Sol peruano</option>
+          <option value="EUR">EUR — Euro</option>
         </select>
       </div>
     </div>
@@ -125,7 +183,7 @@
 
   <div class="form-section">
     <div class="section-label">03 · Forma de pago</div>
-    <div class="field" style="margin-bottom:1rem;">
+    <div class="field">
       <label>Método de pago</label>
       <div class="radio-group">
         <div class="radio-chip"><input type="radio" id="p_efectivo" name="forma_pago" value="Efectivo"><label for="p_efectivo">Efectivo</label></div>
@@ -135,40 +193,19 @@
         <div class="radio-chip"><input type="radio" id="p_empresa" name="forma_pago" value="Cuenta empresa"><label for="p_empresa">Cuenta empresa</label></div>
       </div>
     </div>
+  </div>
+
+  <div class="form-section">
+    <div class="section-label">04 · Notas adicionales</div>
     <div class="field">
-      <label>¿Es reembolsable?</label>
-      <div class="radio-group">
-        <div class="radio-chip"><input type="radio" id="r_si" name="reembolsable" value="Sí"><label for="r_si">Sí, para reembolso</label></div>
-        <div class="radio-chip"><input type="radio" id="r_no" name="reembolsable" value="No"><label for="r_no">No aplica</label></div>
-        <div class="radio-chip"><input type="radio" id="r_cliente" name="reembolsable" value="Cargo al cliente"><label for="r_cliente">Cargo al cliente</label></div>
-      </div>
+      <label for="notas">Observaciones</label>
+      <textarea id="notas" placeholder="Cualquier detalle adicional relevante para este movimiento..."></textarea>
     </div>
-  </div>
-
-  <div class="form-section">
-    <div class="section-label">04 · Comprobante</div>
-    <div class="grid-2">
-      <div class="field"><label for="num_factura">Número de factura / recibo</label><input type="text" id="num_factura" placeholder="Ej: FAC-00123"></div>
-      <div class="field">
-        <label for="tipo_comprobante">Tipo de comprobante</label>
-        <select id="tipo_comprobante">
-          <option value="">Seleccionar...</option>
-          <option>Factura electrónica</option><option>Ticket / nota de venta</option>
-          <option>Recibo simple</option><option>Comprobante bancario</option><option>Sin comprobante</option>
-        </select>
-      </div>
-
-    </div>
-  </div>
-
-  <div class="form-section">
-    <div class="section-label">05 · Notas adicionales</div>
-    <div class="field"><label for="notas">Observaciones</label><textarea id="notas" placeholder="Cualquier detalle adicional relevante para este gasto..."></textarea></div>
   </div>
 
   <div class="submit-area">
-    <p class="submit-hint">Al enviar, el gasto se registrará<br>automáticamente en Google Sheets.</p>
-    <button type="button" class="btn-submit" id="btn-submit" onclick="submitForm()">Registrar gasto →</button>
+    <p class="submit-hint">Al enviar, el movimiento se registrará<br>automáticamente en Google Sheets.</p>
+    <button type="button" class="btn-submit" id="btn-submit" onclick="submitForm()">Registrar movimiento →</button>
   </div>
 </div>
 
@@ -177,15 +214,82 @@
 <script>
   var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzStqMqcrYrQoRaPEkwpBaX-VLUOyp1jjl2MayIX8VjYAc0D6gVXVydREr9662VxZL9/exec';
 
+  var OBRAS = ['Cancer Toluca', 'Depas Moctezuma', 'Santa Rosa-Urgencias', 'Santa Rosa-Hemodialisis'];
+
   document.getElementById('fecha').valueAsDate = new Date();
   document.getElementById('current-date').textContent =
     new Date().toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-  function handleFileChange(input) {
-    var d = document.getElementById('file-name-display');
-    if (input.files && input.files[0]) { d.style.display = 'block'; d.textContent = '✓ ' + input.files[0].name; }
+  // ─── Lógica condicional Etapa → Proyecto ────────────────────────────────────
+  function onEtapaChange() {
+    var etapa = document.getElementById('etapa').value;
+    var sel = document.getElementById('proyecto_select');
+    var selWrap = document.getElementById('proyecto-select-wrap');
+    var libreWrap = document.getElementById('proyecto-libre-wrap');
+    var libre = document.getElementById('proyecto_libre');
+
+    sel.innerHTML = '';
+    libre.value = '';
+
+    if (etapa === 'Obra') {
+      // Mostrar lista de obras + Otro
+      selWrap.classList.remove('hidden');
+      libreWrap.classList.add('hidden');
+      var first = document.createElement('option');
+      first.value = '';
+      first.textContent = 'Seleccionar obra...';
+      sel.appendChild(first);
+      OBRAS.forEach(function(o) {
+        var opt = document.createElement('option');
+        opt.textContent = o;
+        sel.appendChild(opt);
+      });
+      var otro = document.createElement('option');
+      otro.value = '__OTRO__';
+      otro.textContent = 'Otro (especificar)';
+      sel.appendChild(otro);
+    } else if (etapa === 'Proyecto') {
+      // Texto libre directo
+      selWrap.classList.add('hidden');
+      libreWrap.classList.remove('hidden');
+    } else {
+      selWrap.classList.remove('hidden');
+      libreWrap.classList.add('hidden');
+      var msg = document.createElement('option');
+      msg.value = '';
+      msg.textContent = 'Primero selecciona la etapa...';
+      sel.appendChild(msg);
+    }
   }
 
+  function onProyectoSelectChange() {
+    var sel = document.getElementById('proyecto_select');
+    var libreWrap = document.getElementById('proyecto-libre-wrap');
+    if (sel.value === '__OTRO__') {
+      libreWrap.classList.remove('hidden');
+    } else {
+      libreWrap.classList.add('hidden');
+      document.getElementById('proyecto_libre').value = '';
+    }
+  }
+
+  // ─── Genérico para campos con "Otro" ────────────────────────────────────────
+  function toggleOtro(selectId, libreWrapId, libreId) {
+    var sel = document.getElementById(selectId);
+    var wrap = document.getElementById(libreWrapId);
+    if (sel.value === '__OTRO__') {
+      wrap.classList.remove('hidden');
+    } else {
+      wrap.classList.add('hidden');
+      document.getElementById(libreId).value = '';
+    }
+  }
+
+  function onDescripcionChange() { toggleOtro('descripcion_select', 'descripcion-libre-wrap', 'descripcion_libre'); }
+  function onCategoriaChange()   { toggleOtro('categoria_select', 'categoria-libre-wrap', 'categoria_libre'); }
+  function onProveedorChange()   { toggleOtro('proveedor_select', 'proveedor-libre-wrap', 'proveedor_libre'); }
+
+  // ─── Helpers ────────────────────────────────────────────────────────────────
   function showToast(msg, isError) {
     var t = document.getElementById('toast');
     t.textContent = msg;
@@ -196,33 +300,65 @@
   }
 
   function val(id) { return document.getElementById(id).value.trim(); }
-  function radioVal(name) { var el = document.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : ''; }
+
+  function radioVal(name) {
+    var el = document.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : '';
+  }
+
+  // Devuelve el valor real (lista o texto libre si eligió "Otro")
+  function getProyectoFinal() {
+    var etapa = val('etapa');
+    if (etapa === 'Proyecto') {
+      return val('proyecto_libre');
+    }
+    if (etapa === 'Obra') {
+      var sel = val('proyecto_select');
+      if (sel === '__OTRO__') return val('proyecto_libre');
+      return sel;
+    }
+    return '';
+  }
+
+  function getValorFinal(selectId, libreId) {
+    var v = val(selectId);
+    if (v === '__OTRO__') return val(libreId);
+    return v;
+  }
 
   function validateForm() {
-    if (!val('proyecto'))    return 'El nombre del proyecto es requerido.';
-    if (!val('fecha'))       return 'La fecha es requerida.';
-    if (!val('descripcion')) return 'La descripción del gasto es requerida.';
-    if (!val('categoria'))   return 'Selecciona una categoría.';
+    if (!val('tipo_movimiento')) return 'Selecciona el tipo de movimiento.';
+    if (!val('etapa'))           return 'Selecciona la etapa.';
+    if (!getProyectoFinal())     return 'Especifica el nombre del proyecto.';
+    if (!val('fecha'))           return 'La fecha es requerida.';
+    if (!getValorFinal('descripcion_select', 'descripcion_libre')) return 'Especifica la descripción.';
+    if (!getValorFinal('categoria_select', 'categoria_libre'))     return 'Selecciona la categoría.';
     var m = parseFloat(val('monto'));
     if (!val('monto') || isNaN(m) || m <= 0) return 'Ingresa un monto válido mayor a 0.';
     return null;
   }
 
   function resetForm() {
-    ['proyecto','codigo_proyecto','descripcion','proveedor','monto','num_factura','notas']
+    ['monto','notas','proyecto_libre','descripcion_libre','categoria_libre','proveedor_libre']
       .forEach(function(id) { document.getElementById(id).value = ''; });
-    ['etapa','categoria','tipo_comprobante']
+    ['tipo_movimiento','etapa','descripcion_select','categoria_select','proveedor_select']
       .forEach(function(id) { document.getElementById(id).selectedIndex = 0; });
     document.getElementById('moneda').value = 'MXN';
     document.querySelectorAll('input[type="radio"]').forEach(function(r) { r.checked = false; });
     document.getElementById('fecha').valueAsDate = new Date();
+
+    // Restablecer estado condicional
+    onEtapaChange();
+    document.getElementById('descripcion-libre-wrap').classList.add('hidden');
+    document.getElementById('categoria-libre-wrap').classList.add('hidden');
+    document.getElementById('proveedor-libre-wrap').classList.add('hidden');
   }
 
   function finalizarEnvio(btn) {
     enviando = false;
     btn.disabled = false;
-    btn.textContent = 'Registrar gasto →';
-    showToast('✓ Gasto registrado correctamente en Google Sheets.', false);
+    btn.textContent = 'Registrar movimiento →';
+    showToast('✓ Movimiento registrado correctamente en Google Sheets.', false);
     resetForm();
   }
 
@@ -241,27 +377,20 @@
     var params = new URLSearchParams({
       timestamp:        new Date().toISOString(),
       fecha:            val('fecha'),
-      proyecto:         val('proyecto'),
-      codigo_proyecto:  val('codigo_proyecto'),
+      proyecto:         getProyectoFinal(),
+      tipo_movimiento:  val('tipo_movimiento'),
       etapa:            val('etapa'),
-      descripcion:      val('descripcion'),
-      categoria:        val('categoria'),
-      proveedor:        val('proveedor'),
+      descripcion:      getValorFinal('descripcion_select', 'descripcion_libre'),
+      categoria:        getValorFinal('categoria_select', 'categoria_libre'),
+      proveedor:        getValorFinal('proveedor_select', 'proveedor_libre'),
       monto:            val('monto'),
       moneda:           val('moneda'),
       forma_pago:       radioVal('forma_pago'),
-      reembolsable:     radioVal('reembolsable'),
-      num_factura:      val('num_factura'),
-      tipo_comprobante: val('tipo_comprobante'),
       notas:            val('notas')
     });
 
     var url = APPS_SCRIPT_URL + '?' + params.toString();
 
-    // fetch CORS real — Apps Script devuelve Access-Control-Allow-Origin: *
-    // cuando está deployado como "Anyone". Podemos leer la respuesta y confirmar.
-    // no-cors: el dato llega al servidor sin importar CORS ni redirects
-    // Una sola peticion, sin fallback que duplique el envio
     fetch(url, { method: 'GET', mode: 'no-cors' })
       .then(function() { finalizarEnvio(btn); })
       .catch(function() { finalizarEnvio(btn); });
